@@ -68,6 +68,13 @@ A **3–5 minute** screen recording that shows:
 pnpm install
 ```
 
+### Seed demo data
+```bash
+pnpm --filter @takehome/api seed
+```
+
+Demo user: `demo@teamboards.dev` / `password123`
+
 ### Dev (runs both apps)
 ```bash
 pnpm dev

@@ -1,18 +1,25 @@
-export function App() {
-  return (
-    <div style={{ fontFamily: "system-ui, sans-serif", padding: 24 }}>
-      <h1 style={{ margin: 0 }}>Team Boards (starter)</h1>
-      <p style={{ maxWidth: 760, lineHeight: 1.4 }}>
-        This is a minimal scaffold. Candidates will implement routing, auth, board UI,
-        tasks, comments, and all required behaviors.
-      </p>
+import { Navigate, Route, Routes } from "react-router-dom";
+import { BoardPage } from "./BoardPage";
+import { AuthPage } from "./AuthPage";
+import { useAuth } from "../state/auth";
 
-      <section style={{ marginTop: 16, padding: 16, border: "1px solid #ddd", borderRadius: 12 }}>
-        <h2 style={{ marginTop: 0 }}>API connectivity check</h2>
-        <p>
-          Ensure the API is running and visit <code>/health</code> on port 4000.
-        </p>
-      </section>
-    </div>
+export function App() {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return <div className="page">Checking your session…</div>;
+  }
+
+  return (
+    <Routes>
+      <Route path="/" element={<Navigate to="/board" replace />} />
+      <Route path="/login" element={<AuthPage mode="login" />} />
+      <Route path="/register" element={<AuthPage mode="register" />} />
+      <Route
+        path="/board"
+        element={user ? <BoardPage /> : <Navigate to="/login" replace />}
+      />
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   );
 }

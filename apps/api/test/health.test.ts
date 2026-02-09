@@ -1,6 +1,22 @@
-import { describe, it, expect } from "vitest";
+import { beforeAll, describe, it, expect } from "vitest";
+import fs from "fs";
+import path from "path";
 import request from "supertest";
-import app from "../src/index";
+import type { Express } from "express";
+
+let app: Express;
+
+beforeAll(async () => {
+  process.env.NODE_ENV = "test";
+  const tmpDir = path.resolve(__dirname, "../.tmp");
+  fs.mkdirSync(tmpDir, { recursive: true });
+  process.env.DB_PATH = path.join(
+    tmpDir,
+    `health-${Date.now()}-${Math.random().toString(16).slice(2)}.sqlite`
+  );
+  const mod = await import("../src/index");
+  app = mod.default;
+});
 
 describe("GET /health", () => {
   it("returns ok", async () => {
