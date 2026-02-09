@@ -42,6 +42,10 @@ export function AuthPage({ mode }: { mode: AuthMode }) {
   return (
     <div className="auth-page">
       <form className="auth-card" onSubmit={handleSubmit}>
+        <div className="brand">
+          <div className="brand-icon">TB</div>
+          <span style={{ fontWeight: 600, fontSize: 15 }}>Team Boards</span>
+        </div>
         <h1>{mode === "login" ? "Welcome back" : "Create your account"}</h1>
         <p className="muted">
           {mode === "login"
