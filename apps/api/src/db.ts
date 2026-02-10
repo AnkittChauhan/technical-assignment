@@ -1,14 +1,16 @@
 import Database from "better-sqlite3";
+import type BetterSqlite3 from "better-sqlite3";
 import path from "path";
 
-const dbPath = process.env.DB_PATH ?? path.resolve(process.cwd(), "data.sqlite");
-
-const db = new Database(dbPath);
-
-db.pragma("journal_mode = WAL");
-db.pragma("foreign_keys = ON");
+let db: BetterSqlite3.Database | null = null;
 
 export function initDb() {
+  const dbPath = process.env.DB_PATH ?? path.resolve(process.cwd(), "data.sqlite");
+  db = new Database(dbPath);
+
+  db.pragma("journal_mode = WAL");
+  db.pragma("foreign_keys = ON");
+
   db.exec(`
     CREATE TABLE IF NOT EXISTS users (
       id TEXT PRIMARY KEY,
@@ -64,5 +66,8 @@ export function initDb() {
 }
 
 export function getDb() {
+  if (!db) {
+    throw new Error("Database not initialised — call initDb() first");
+  }
   return db;
 }

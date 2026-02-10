@@ -15,7 +15,22 @@ export type AuthUser = {
 
 export type AuthedRequest = Request & { user: AuthUser };
 
-const jwtSecret = process.env.JWT_SECRET ?? "dev-secret";
+const isDevelopment =
+  !process.env.NODE_ENV ||
+  process.env.NODE_ENV === "development" ||
+  process.env.NODE_ENV === "test";
+
+const jwtSecret = (() => {
+  if (isDevelopment) {
+    return process.env.JWT_SECRET ?? "dev-secret";
+  }
+
+  if (!process.env.JWT_SECRET) {
+    throw new Error("JWT_SECRET environment variable is required in non-development environments");
+  }
+
+  return process.env.JWT_SECRET;
+})();
 
 export function signToken(userId: string) {
   return jwt.sign({ sub: userId } satisfies JwtPayload, jwtSecret, { expiresIn: "7d" });
